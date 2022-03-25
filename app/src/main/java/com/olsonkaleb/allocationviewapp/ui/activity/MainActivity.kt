@@ -2,13 +2,13 @@ package com.olsonkaleb.allocationviewapp.ui.activity
 
 import android.graphics.Color
 import android.graphics.Rect
-import android.graphics.RectF
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
@@ -35,32 +35,34 @@ class MainActivity : AppCompatActivity() {
 
         //Create FrameLayouts to act as the allocations views.
         val frameLayout1 = FrameLayout(this)
-        val layoutParams1 = FrameLayout.LayoutParams(200, 200)
+        val layoutParams1 = FrameLayout.LayoutParams(400, 400)
         layoutParams1.setMargins(10, 10, 10, 10)
         rootLayout.addView(frameLayout1, layoutParams1)
 
         val frameLayout2 = FrameLayout(this)
-        val layoutParams2 = FrameLayout.LayoutParams(500, 500)
+        val layoutParams2 = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 400)
         layoutParams2.setMargins(10, 10, 10, 10)
         rootLayout.addView(frameLayout2, layoutParams2)
 
-        val frameLayout3 = FrameLayout(this)
-        val layoutParams3 = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 500)
-        layoutParams3.setMargins(10, 10, 10, 10)
-        rootLayout.addView(frameLayout3, layoutParams3)
-
-        //Some random values to assign them
-        val values1 = arrayListOf(3, 1, 1, 4, 1)
-        val values2 = arrayListOf(3, 1, 1, 4, 1, 3, 2, 2, 5, 1, 2)
-        val values3 = arrayListOf(5, 3, 7, 2, 5, 9, 2, 4, 7, 1, 9, 4, 6, 9, 3, 5, 7, 1, 3, 8)
+        val resetButton = Button(this)
+        resetButton.text = "Reset"
+        resetButton.setOnClickListener {
+            frameLayout1.removeAllViews()
+            frameLayout2.removeAllViews()
+            iterateTreeView(frameLayout1, getRandomListOfIntegers(5, 15), Rect(0, 0, frameLayout1.width, frameLayout1.height), true)
+            iterateTreeView(frameLayout2, getRandomListOfIntegers(15, 25), Rect(0, 0, frameLayout2.width, frameLayout2.height), true)
+        }
+        rootLayout.addView(resetButton)
 
         //Build the allocation views once things are ready
         rootLayout.doOnLayout {
-            iterateTreeView(frameLayout1, values1, Rect(0, 0, frameLayout1.width, frameLayout1.height), true)
-            iterateTreeView(frameLayout2, values2, Rect(0, 0, frameLayout2.width, frameLayout2.height), true)
-            iterateTreeView(frameLayout3, values3, Rect(0, 0, frameLayout3.width, frameLayout3.height), true)
+            iterateTreeView(frameLayout1, getRandomListOfIntegers(5, 15), Rect(0, 0, frameLayout1.width, frameLayout1.height), true)
+            iterateTreeView(frameLayout2, getRandomListOfIntegers(15, 25), Rect(0, 0, frameLayout2.width, frameLayout2.height), true)
         }
     }
+
+    //Generate some random data
+    private fun getRandomListOfIntegers(min: Int, max: Int): ArrayList<Int> = ArrayList((1..Random.nextInt(min, max)).map { Random.nextInt(10) })
 
     private fun iterateTreeView(parentView: ViewGroup, values: ArrayList<Int>, bounds: Rect, verticalDivide: Boolean) {
         if (values.size == 1) {
